@@ -51,13 +51,13 @@ void set_mn_0(int array_start) {
 }
 
 void set_mn_1(int array_start) {
-  leds_mn[array_start]   = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 1
+  leds_mn[array_start]   = CRGB::Black;                              // LED 1
   leds_mn[array_start+1] = CRGB::Black;                              // LED 2
-  leds_mn[array_start+2] = CRGB::Black;                              // LED 3
+  leds_mn[array_start+2] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 3
   leds_mn[array_start+3] = CRGB::Black;                              // LED 4
-  leds_mn[array_start+4] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 5
+  leds_mn[array_start+4] = CRGB::Black;                              // LED 5
   leds_mn[array_start+5] = CRGB::Black;                              // LED 6
-  leds_mn[array_start+6] = CRGB::Black;                              // LED 7
+  leds_mn[array_start+6] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 7
 }
 
 void set_mn_2(int array_start) {
@@ -71,23 +71,23 @@ void set_mn_2(int array_start) {
 }
 
 void set_mn_3(int array_start) {
-  leds_mn[array_start]   = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 1
+  leds_mn[array_start]   = CRGB::Black;                              // LED 1
   leds_mn[array_start+1] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 2
-  leds_mn[array_start+2] = CRGB::Black;                              // LED 3
+  leds_mn[array_start+2] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 3
   leds_mn[array_start+3] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 4
-  leds_mn[array_start+4] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 5
+  leds_mn[array_start+4] = CRGB::Black;                              // LED 5
   leds_mn[array_start+5] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 6
-  leds_mn[array_start+6] = CRGB::Black;                              // LED 7
+  leds_mn[array_start+6] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 7
 }
 
 void set_mn_4(int array_start) {
-  leds_mn[array_start]   = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 1
+  leds_mn[array_start]   = CRGB::Black;                              // LED 1
   leds_mn[array_start+1] = CRGB::Black;                              // LED 2
   leds_mn[array_start+2] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 3
   leds_mn[array_start+3] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 4
   leds_mn[array_start+4] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 5
   leds_mn[array_start+5] = CRGB::Black;                              // LED 6
-  leds_mn[array_start+6] = CRGB::Black;                              // LED 7
+  leds_mn[array_start+6] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 7
 }
 
 void set_mn_5(int array_start) {
@@ -101,23 +101,23 @@ void set_mn_5(int array_start) {
 }
 
 void set_mn_6(int array_start) {
-  leds_mn[array_start]   = CRGB::Black;                              // LED 1
+  leds_mn[array_start]   = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 1
   leds_mn[array_start+1] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 2
   leds_mn[array_start+2] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 3
   leds_mn[array_start+3] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 4
   leds_mn[array_start+4] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 5
   leds_mn[array_start+5] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 6
-  leds_mn[array_start+6] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 7
+  leds_mn[array_start+6] = CRGB::Black;                              // LED 7
 }
 
 void set_mn_7(int array_start) {
-  leds_mn[array_start]   = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 1
-  leds_mn[array_start+1] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 2
-  leds_mn[array_start+2] = CRGB::Black;                              // LED 3
+  leds_mn[array_start]   = CRGB::Black;                              // LED 1
+  leds_mn[array_start+1] = CRGB::Black;                              // LED 2
+  leds_mn[array_start+2] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 3
   leds_mn[array_start+3] = CRGB::Black;                              // LED 4
-  leds_mn[array_start+4] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 5
-  leds_mn[array_start+5] = CRGB::Black;                              // LED 6
-  leds_mn[array_start+6] = CRGB::Black;                              // LED 7
+  leds_mn[array_start+4] = CRGB::Black;                              // LED 5
+  leds_mn[array_start+5] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 6
+  leds_mn[array_start+6] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 7
 }
 
 void set_mn_8(int array_start) {
@@ -131,11 +131,11 @@ void set_mn_8(int array_start) {
 }
 
 void set_mn_9(int array_start) {
-  leds_mn[array_start]   = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 1
+  leds_mn[array_start]   = CRGB::Black;                              // LED 1
   leds_mn[array_start+1] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 2
   leds_mn[array_start+2] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 3
   leds_mn[array_start+3] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 4
   leds_mn[array_start+4] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 5
   leds_mn[array_start+5] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 6
-  leds_mn[array_start+6] = CRGB::Black;                              // LED 7
+  leds_mn[array_start+6] = ColorFromPalette(MyRainbow_pal, grad_mn); // LED 7
 }
