@@ -10,7 +10,11 @@ void set_hr(int hour_number) {
         if (i == 0) {
           set_hr_0(i*7);
         } else if (i == 1) {
-          set_hr_off(i*7);
+          if (hour_digit[0] == 0) {
+            set_hr_0(i*7);
+          } else {
+            set_hr_off(i*7);
+          }
         }
         break;
       case 1:
