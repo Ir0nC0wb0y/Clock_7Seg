@@ -15,7 +15,7 @@
 #define NUM_LEDS_MN      14
 #define DATA_PIN_HR       5  //D1
 #define DATA_PIN_MN       4  //D2
-#define CLOCK_BRIGHTNESS  2
+#define CLOCK_BRIGHTNESS 25
 
 // Time Animation
 #define HOUR_FORMAT      12
@@ -23,6 +23,7 @@ int grad_hr     =   0;
 int grad_mn     = 120;
 int grad_dir_hr =   1;
 int grad_dir_mn =   1;
+#define TIME_ANIMATION animation_day_gradient
 
 
 // Time Keeping (NTP)
@@ -30,11 +31,12 @@ long utcOffsetInSeconds     = -18000;
 long utcOffsetInSeconds_DST = -21600;
 #define NTP_UPDATE_INT        900000
 //char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-int time_hour   =   0;
-int time_minute =   0;
-int time_second =   0;
-int date_month  =   0;
-int date_day    =   0;
+int time_hour_raw =   0;
+int time_hour     =   0;
+int time_minute   =   0;
+int time_second   =   0;
+int date_month    =   0;
+int date_day      =   0;
 
 // DST Routines
 bool dst_state = 1;
@@ -63,11 +65,11 @@ CRGB leds_mn[NUM_LEDS_MN];
 
 DEFINE_GRADIENT_PALETTE( MyRainbow ) { // row: palette index, R, G, B
       0, 255,   0,   0,    //    Red
-     50, 255, 255,   0,    // Yellow
-    100,   0, 255,   0,    //  Green
-    150,   0, 255, 255,    //   Cyan
+     50, 255, 165,   0,    // Orange
+    100, 255, 255,   0,    // Yellow
+    150,   0, 255,   0,    //  Green
     200,   0,   0, 255,    //   Blue
-    250, 255,   0, 255,    // Purple
+    250, 128,   0, 128,    // Purple
     255,   0,   0,   0};   //  Black
 CRGBPalette16 MyRainbow_pal = MyRainbow;
 
@@ -89,9 +91,8 @@ void setup() {
 
 void loop() {
   handle_DST();
-
   handle_time();
-  
+  TIME_ANIMATION();
   handle_display();
   
   delay(1000);
@@ -131,14 +132,16 @@ void handle_DST() {
 
 void handle_time(){
   timeClient.update();
-  time_hour   = timeClient.getHours();
+  time_hour_raw   = timeClient.getHours();
   time_minute = timeClient.getMinutes();
   time_second = timeClient.getSeconds();
   date_month = timeClient.getMonth();
   date_day   = timeClient.getDay();
   Serial.print("The current time is: "); Serial.print(time_hour); Serial.print(":"); Serial.print(time_minute); Serial.print(":"); Serial.println(time_second);
-  if (HOUR_FORMAT == 12 && time_hour > 12){
-    time_hour = time_hour - 12;
+  if (HOUR_FORMAT == 12 && time_hour_raw > 12){
+    time_hour = time_hour_raw - 12;
+  } else {
+    time_hour = time_hour_raw;
   }
 }
 
