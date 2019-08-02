@@ -27,8 +27,8 @@ int grad_dir_mn =   1;
 
 
 // Time Keeping (NTP)
-long utcOffsetInSeconds     = -18000;
-long utcOffsetInSeconds_DST = -21600;
+long utcOffsetInSeconds_DST  = -18000;
+long utcOffsetInSeconds      = -21600;
 #define NTP_UPDATE_INT        900000
 //char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 int time_hour_raw =   0;
@@ -52,13 +52,13 @@ bool dst_state = 1;
   // DST Ends the first sunday of November
   #define DST_END_MONTH    11
   #define DST_END_DAY       0
-  #define DST_END_SEQ       2
+  #define DST_END_SEQ       1
   #define DST_END_HOUR      2
   int dst_end_day_count   = 0;
 
 
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "north-america.pool.ntp.org", utcOffsetInSeconds, NTP_UPDATE_INT);
+NTPClient timeClient(ntpUDP, "north-america.pool.ntp.org", 0, NTP_UPDATE_INT);
 
 CRGB leds_hr[NUM_LEDS_HR];
 CRGB leds_mn[NUM_LEDS_MN];
@@ -86,6 +86,7 @@ void setup() {
   wifiManager.autoConnect("7Seg_Clock");
   Serial.println("connected... yay!");
 
+  timeClient.setTimeOffset(utcOffsetInSeconds_DST); // this needs adjusting for startup
   timeClient.begin();
 }
 
