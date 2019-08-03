@@ -35,8 +35,8 @@ int grad_hr             =           0;
 int grad_mn             =         120;
 int grad_dir_hr         =           1;
 int grad_dir_mn         =           1;
-#define TIME_ANIMATION animation_const                // available options: animation_cycle, animation_day_gradient, animation_hour_gradient, animation_min_gradient, animation_const
-#define TIME_ANIMATION_GRAD       150               // only used for "animation_const"
+#define TIME_ANIMATION              4                 // available options: animation_cycle, animation_day_gradient, animation_hour_gradient, animation_min_gradient, animation_const
+//#define TIME_ANIMATION_GRAD       150               // only used for "animation_const"
 
 
 // Time Keeping (NTP)
@@ -78,19 +78,20 @@ CRGB leds_mn[NUM_LEDS_MN];
 
 DEFINE_GRADIENT_PALETTE( MyRainbow ) { // row: palette index, R, G, B
       0, 255,   0,   0,    //    Red
-     50, 255, 165,   0,    // Orange
-    100, 255, 255,   0,    // Yellow
-    150,   0, 255,   0,    //  Green
-    200,   0,   0, 255,    //   Blue
-    250, 128,   0, 128,    // Purple
+     40, 255, 165,   0,    // Orange
+     80, 255, 255,   0,    // Yellow
+    120,   0, 255,   0,    //  Green
+    160,   0,   0, 255,    //   Blue
+    200, 128,   0, 128,    // Purple
+    240, 255,   0,   0,    //    Red
     255,   0,   0,   0};   //  Black
 CRGBPalette16 MyRainbow_pal = MyRainbow;
 
 void setup() {
   Serial.begin(115200);
   
-  FastLED.addLeds<WS2812B, DATA_PIN_HR, RGB>(leds_hr, NUM_LEDS_HR);
-  FastLED.addLeds<WS2812B, DATA_PIN_MN, RGB>(leds_mn, NUM_LEDS_MN);
+  FastLED.addLeds<WS2812B, DATA_PIN_HR, GRB>(leds_hr, NUM_LEDS_HR);
+  FastLED.addLeds<WS2812B, DATA_PIN_MN, GRB>(leds_mn, NUM_LEDS_MN);
   FastLED.setBrightness(BRIGHTNESS_START);
   handle_display();
   
@@ -106,7 +107,7 @@ void setup() {
 void loop() {
   handle_DST();
   handle_time();
-  TIME_ANIMATION();
+  handle_animation(TIME_ANIMATION);
   handle_display();
 
   Serial.println();
