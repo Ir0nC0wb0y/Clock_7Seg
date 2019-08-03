@@ -33,3 +33,23 @@ void animation_hour_gradient(){
   grad_hr = hour_gradient;
   grad_mn = hour_gradient;
 }
+
+void animation_min_gradient(){
+  double min_percent;
+  int min_gradient;
+  min_percent = (time_second/60.0)*100;
+  min_gradient = map(min_percent, 0, 100, 0, 250);
+  Serial.print("(min_percent, min_gradient): ("); Serial.print(min_percent); Serial.print(", "); Serial.print(min_gradient); Serial.println(")");
+  grad_hr = min_gradient;
+  grad_mn = min_gradient;
+}
+
+void animation_const() {
+  #ifdef TIME_ANIMATION_GRAD
+    grad_hr = TIME_ANIMATION_GRAD;
+    grad_mn = TIME_ANIMATION_GRAD;
+  #else
+    grad_hr =  50;
+    grad_mn = 150;
+  #endif
+}
