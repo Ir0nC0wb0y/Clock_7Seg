@@ -1,3 +1,13 @@
+#include <Common.h>
+
+void animation_cycle();
+void animation_day_gradient();
+void animation_hour_gradient();
+void animation_min_gradient();
+void animation_const();
+//double map_double(double x2, double x1, double x3, double y1, double y3);
+double map_double(double, double, double, double, double);
+
 void handle_animation(int animation_func) {
   //Serial.print("animation_func: "); Serial.print(animation_func);
   switch (animation_func) {
@@ -76,13 +86,13 @@ void animation_min_gradient(){
 
 void animation_const() {
   // handle animation(5)
-  #ifdef TIME_ANIMATION_GRAD
-    grad_hr = TIME_ANIMATION_GRAD;
-    grad_mn = TIME_ANIMATION_GRAD;
-  #else
+  if ( grad_const == -1) {
     grad_hr =  50;
     grad_mn = 150;
-  #endif
+  } else {
+    grad_hr = grad_const;
+    grad_mn = grad_const;
+  }
 }
 
 double map_double(double x2, double x1, double x3, double y1, double y3) {

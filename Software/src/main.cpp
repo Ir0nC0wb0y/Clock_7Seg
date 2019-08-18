@@ -1,14 +1,26 @@
+#include <Arduino.h>
+
+// Library Dependencies
+#include <ESP8266WiFi.h>
+#include <WiFiUdp.h>
+#include <DNSServer.h>
+#include <ESP8266WebServer.h>
+
+// FastLED Setup
 #define FASTLED_INTERRUPT_RETRY_COUNT 0
 #define FASTLED_ESP8266_RAW_PIN_ORDER
 #include <FastLED.h>
-#include <ESP8266WiFi.h>
-#include <WiFiUDP.h>
-#include <NTPClient.h>           //https://github.com/arduino-libraries/NTPClient
 
-// Necessary libraries for WiFiManager
-#include <DNSServer.h>
-#include <ESP8266WebServer.h>
-#include <WiFiManager.h>         //https://github.com/tzapu/WiFiManager
+// NTPClient Setup
+#include <NTPClient.h>
+
+// WifiManager Setup
+#include <WiFiManager.h>
+
+#include <Common.h>
+#include <Segments_Hour.cpp>
+#include <Segments_Minute.cpp>
+#include <Animations.cpp>
 
 // FastLED Variables
 #define NUM_LEDS_HR                14
@@ -35,8 +47,8 @@ int grad_hr             =           0;                // default values, used in
 int grad_mn             =         120;                // default values, used in starting animation
 int grad_dir_hr         =           1;
 int grad_dir_mn         =           1;
+int grad_const          =         150;
 #define TIME_ANIMATION              2                 // available options: animation_cycle, animation_day_gradient, animation_hour_gradient, animation_min_gradient, animation_const
-//#define TIME_ANIMATION_GRAD       150               // only used for "animation_const"
 
 
 // Time Keeping (NTP)
@@ -69,12 +81,11 @@ bool dst_state = 1;
   #define DST_END_HOUR              2
   int dst_end_day_count   =         0;
 
-
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "north-america.pool.ntp.org", 0, NTP_UPDATE_INT);
 
-CRGB leds_hr[NUM_LEDS_HR];
-CRGB leds_mn[NUM_LEDS_MN];
+//CRGB leds_hr[NUM_LEDS_HR];
+//CRGB leds_mn[NUM_LEDS_MN];
 
 DEFINE_GRADIENT_PALETTE( MyRainbow ) { // row: palette index, R, G, B
       0, 255,   0,   0,    //    Red
@@ -86,6 +97,14 @@ DEFINE_GRADIENT_PALETTE( MyRainbow ) { // row: palette index, R, G, B
     240, 255,   0,   0,    //    Red
     255,   0,   0,   0};   //  Black
 CRGBPalette16 MyRainbow_pal = MyRainbow;
+
+// #include <loop_handles.cpp>
+void handle_DST();
+void handle_time();
+void handle_display();
+void handle_brightness();
+
+
 
 void setup() {
   Serial.begin(115200);
@@ -105,15 +124,15 @@ void setup() {
 }
 
 void loop() {
+  // put your main code here, to run repeatedly:
   handle_DST();
   handle_time();
   handle_animation(TIME_ANIMATION);
   handle_display();
 
   Serial.println();
-  
-  delay(1000);
 }
+
 
 void handle_DST() {
   // This function is only good for the DST change times. This does NOT help if the clock
@@ -157,7 +176,7 @@ void handle_time(){
   time_hour_raw   = timeClient.getHours();
   time_minute = timeClient.getMinutes();
   time_second = timeClient.getSeconds();
-  date_month = timeClient.getMonth();
+  //date_month = timeClient.getMonth();
   date_day   = timeClient.getDay();
   Serial.print("The current time is: "); Serial.print(time_hour); Serial.print(":"); Serial.print(time_minute); Serial.print(":"); Serial.println(time_second);
   if (HOUR_FORMAT == 12 && time_hour_raw > 12){
