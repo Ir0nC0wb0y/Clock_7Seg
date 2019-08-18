@@ -17,10 +17,10 @@
 // WifiManager Setup
 #include <WiFiManager.h>
 
-#include <Common.h>
-#include <Segments_Hour.cpp>
-#include <Segments_Minute.cpp>
-#include <Animations.cpp>
+#include "Common.h"
+#include "Segments_Hour.cpp"
+#include "Segments_Minute.cpp"
+#include "Animations.cpp"
 
 // FastLED Variables
 #define NUM_LEDS_HR                14
