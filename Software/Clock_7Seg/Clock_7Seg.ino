@@ -18,8 +18,8 @@
 
 // Brightness Variables
 #define BRIGHTNESS_START            5
-#define BRIGHTNESS_MAX             75
-#define BRIGHTNESS_MIN              5
+#define BRIGHTNESS_MAX            100
+#define BRIGHTNESS_MIN              1
 #define BRIGHTNESS_READ_MIN       200
 #define BRIGHTNESS_READ_MAX       850
 #define BRIGHTNESS_ERR_THRESH       5
@@ -31,11 +31,11 @@ int brightness_err      =           0;
 
 // Time Animation
 #define HOUR_FORMAT                12
-int grad_hr             =           0;
-int grad_mn             =         120;
+int grad_hr             =           0;                // default values, used in starting animation
+int grad_mn             =         120;                // default values, used in starting animation
 int grad_dir_hr         =           1;
 int grad_dir_mn         =           1;
-#define TIME_ANIMATION              4                 // available options: animation_cycle, animation_day_gradient, animation_hour_gradient, animation_min_gradient, animation_const
+#define TIME_ANIMATION              2                 // available options: animation_cycle, animation_day_gradient, animation_hour_gradient, animation_min_gradient, animation_const
 //#define TIME_ANIMATION_GRAD       150               // only used for "animation_const"
 
 
@@ -180,7 +180,7 @@ void handle_brightness() {
   int brightness_new = map(a_read,BRIGHTNESS_READ_MIN,BRIGHTNESS_READ_MAX,BRIGHTNESS_MIN,BRIGHTNESS_MAX);
   //Serial.print("Analog read, brightness_set, brightness_new "); Serial.print(a_read); Serial.print(", "); Serial.print(brightness_set); Serial.print(", "); Serial.println(brightness_new);
   brightness_err = brightness_err + (brightness_new-brightness_set);
-  Serial.print("brightness_err: "); Serial.println(brightness_err);
+  //Serial.print("brightness_err: "); Serial.println(brightness_err);
   
   if (abs(brightness_err) >= BRIGHTNESS_ERR_THRESH) {
     int brightness_change;
