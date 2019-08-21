@@ -124,7 +124,7 @@ void handle_DST() {
   if (dst_state) {
     //when DST is active, check for the END criteria
     if (date_month == DST_END_MONTH) {
-      if (date_day = DST_END_DAY) {
+      if (date_day == DST_END_DAY) {
         dst_end_day_count++;
         if (dst_end_day_count == DST_END_SEQ) {
           if (time_hour == DST_END_HOUR) {
@@ -138,7 +138,7 @@ void handle_DST() {
   } else {
     // when DST is inactive, check for the START criteria
     if (date_month == DST_START_MONTH) {
-      if (date_day = DST_START_DAY) {
+      if (date_day == DST_START_DAY) {
         dst_start_day_count++;
         if (dst_start_day_count == DST_START_SEQ) {
           if (time_hour == DST_START_HOUR) {
