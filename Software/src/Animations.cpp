@@ -5,7 +5,6 @@ void animation_day_gradient();
 void animation_hour_gradient();
 void animation_min_gradient();
 void animation_const();
-//double map_double(double x2, double x1, double x3, double y1, double y3);
 double map_double(double, double, double, double, double);
 
 void handle_animation(int animation_func) {

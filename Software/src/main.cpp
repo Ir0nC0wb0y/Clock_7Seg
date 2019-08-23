@@ -18,9 +18,9 @@
 #include <WiFiManager.h>
 
 #include "Common.h"
-#include "Segments_Hour.cpp"
-#include "Segments_Minute.cpp"
-#include "Animations.cpp"
+#include "Segments_Hour.h"
+#include "Segments_Minute.h"
+#include "Animations.h"
 
 // FastLED Variables
 #define NUM_LEDS_HR                14
