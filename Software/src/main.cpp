@@ -84,8 +84,8 @@ bool dst_state = 1;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "north-america.pool.ntp.org", 0, NTP_UPDATE_INT);
 
-//CRGB leds_hr[NUM_LEDS_HR];
-//CRGB leds_mn[NUM_LEDS_MN];
+CRGB leds_hr[NUM_LEDS_HR];
+CRGB leds_mn[NUM_LEDS_MN];
 
 DEFINE_GRADIENT_PALETTE( MyRainbow ) { // row: palette index, R, G, B
       0, 255,   0,   0,    //    Red
