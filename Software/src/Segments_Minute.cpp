@@ -21,8 +21,8 @@ void set_mn(int min_number) {
 
   int start_led;
   for (int i=0; i < 2; i++) {
+    start_led = i * 7;
     switch (min_digit[i]) {
-        start_led = i * 7;
       case 0:
         set_mn_0(start_led);
         break;

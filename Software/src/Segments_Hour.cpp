@@ -22,8 +22,8 @@ void set_hr(int hour_number) {
 
   int start_led;
   for (int i=0; i < 2; i++) {
+    start_led = i * 7;
     switch (hour_digit[i]) {
-        start_led = i * 7;
       case 0:
         if (i == 0) {
           set_hr_0(start_led);

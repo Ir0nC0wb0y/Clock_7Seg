@@ -48,7 +48,7 @@ int grad_mn             =         120;                // default values, used in
 int grad_dir_hr         =           1;
 int grad_dir_mn         =           1;
 int grad_const          =         150;
-#define TIME_ANIMATION              2                 // available options: animation_cycle, animation_day_gradient, animation_hour_gradient, animation_min_gradient, animation_const
+#define TIME_ANIMATION              4                 // available options: animation_cycle, animation_day_gradient, animation_hour_gradient, animation_min_gradient, animation_const
 
 
 // Time Keeping (NTP)
@@ -125,12 +125,14 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  handle_DST();
+  //handle_DST();
   handle_time();
   handle_animation(TIME_ANIMATION);
   handle_display();
 
   Serial.println();
+
+  delay(1000);
 }
 
 
