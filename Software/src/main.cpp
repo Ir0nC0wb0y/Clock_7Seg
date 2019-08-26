@@ -47,9 +47,16 @@ int grad_hr             =           0;                // default values, used in
 int grad_mn             =         120;                // default values, used in starting animation
 int grad_dir_hr         =           1;
 int grad_dir_mn         =           1;
-int grad_const          =         150;
-#define TIME_ANIMATION              4                 // available options: animation_cycle, animation_day_gradient, animation_hour_gradient, animation_min_gradient, animation_const
-
+#define TIME_ANIMATION              3
+  // TIME_ANIMATION available options:
+  //    1 - animation_cycle
+  //    2 - animation_day_gradient
+  //    3 - animation_hour_gradient
+  //    4 - animation_min_gradient
+  //    5 - animation_const (need to set grad_const to int 0-255)
+  #ifdef TIME_ANIMATION == 3
+    int grad_const = 150;
+  #endif
 
 // Time Keeping (NTP)
 long utcOffsetInSeconds_DST  = -18000;
@@ -181,10 +188,14 @@ void handle_time(){
   //date_month = timeClient.getMonth();
   date_day   = timeClient.getDay();
   Serial.print("The current time is: "); Serial.print(time_hour); Serial.print(":"); Serial.print(time_minute); Serial.print(":"); Serial.println(time_second);
-  if (HOUR_FORMAT == 12 && time_hour_raw > 12){
-    time_hour = time_hour_raw - 12;
-  } else {
-    time_hour = time_hour_raw;
+  if (HOUR_FORMAT == 12 ) {
+    if ( time_hour_raw > 12) {
+      time_hour = time_hour_raw - 12;
+    } else if (time_hour_raw == 0) {
+      time_hour = 12;
+    } else {
+      time_hour = time_hour_raw;
+    }
   }
 }
 
