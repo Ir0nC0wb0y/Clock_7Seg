@@ -70,15 +70,16 @@ int time_second        =            0;
 int date_month         =            0;
 int date_day           =            0;
 
+
 // DST Routines
-bool dst_state = 1;
+bool DST_flag          =            0;
+bool dst_state         =            1;               // default DST state
   // DST START
   // DST starts on the second sunday of March
   #define DST_START_MONTH           3
   #define DST_START_DAY             0
   #define DST_START_SEQ             2
   #define DST_START_HOUR            2
-  int dst_start_day_count =         0;
 
   // DST END
   // DST Ends the first sunday of November
@@ -86,7 +87,6 @@ bool dst_state = 1;
   #define DST_END_DAY               0
   #define DST_END_SEQ               1
   #define DST_END_HOUR              2
-  int dst_end_day_count   =         0;
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "north-america.pool.ntp.org", 0, NTP_UPDATE_INT);
@@ -128,11 +128,11 @@ void setup() {
 
   timeClient.setTimeOffset(utcOffsetInSeconds_DST); // this needs adjusting for startup
   timeClient.begin();
+  //handle_DST();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //handle_DST();
   handle_time();
   handle_animation(TIME_ANIMATION);
   handle_display();
@@ -144,59 +144,39 @@ void loop() {
 
 
 void handle_DST() {
-  // This function is only good for the DST change times. This does NOT help if the clock
-  // is restarted around DST change or when its starts outside of DST (default).
-  //
-  // This needs to change to check the Epoch time against the nth day of the month instead.
-  //
-  if (dst_state) {
-    //when DST is active, check for the END criteria
-    if (date_month == DST_END_MONTH) {
-      if (date_day == DST_END_DAY) {
-        dst_end_day_count++;
-        if (dst_end_day_count == DST_END_SEQ) {
-          if (time_hour == DST_END_HOUR) {
-            dst_state = 0;
-            dst_end_day_count = 0;
-            timeClient.setTimeOffset(utcOffsetInSeconds);
-          }
-        }
-      }
-    }
-  } else {
-    // when DST is inactive, check for the START criteria
-    if (date_month == DST_START_MONTH) {
-      if (date_day == DST_START_DAY) {
-        dst_start_day_count++;
-        if (dst_start_day_count == DST_START_SEQ) {
-          if (time_hour == DST_START_HOUR) {
-            dst_state = 1;
-            dst_start_day_count = 0;
-            timeClient.setTimeOffset(utcOffsetInSeconds_DST);
-          }
-        }
-      }
-    }
-  }
+  // This function checks the epoch time to date, checking for 2nd Sunday in March or 1st Sunday in Nov
+  int time_epoch = timeClient.getEpochTime();
+
+  
 }
 
 void handle_time(){
   timeClient.update();
-  time_hour_raw   = timeClient.getHours();
-  time_minute = timeClient.getMinutes();
-  time_second = timeClient.getSeconds();
+  time_hour_raw = timeClient.getHours();
+  time_minute   = timeClient.getMinutes();
+  time_second   = timeClient.getSeconds();
   //date_month = timeClient.getMonth();
   date_day   = timeClient.getDay();
   Serial.print("The current time is: "); Serial.print(time_hour); Serial.print(":"); Serial.print(time_minute); Serial.print(":"); Serial.println(time_second);
   if (HOUR_FORMAT == 12 ) {
+    // Format the time for 12 hour readibility
     if ( time_hour_raw > 12) {
+      // hours 13-23
       time_hour = time_hour_raw - 12;
     } else if (time_hour_raw == 0) {
+      // convert hour 0 to 12
       time_hour = 12;
     } else {
+      // set the remaining hours
       time_hour = time_hour_raw;
     }
   }
+
+  // DST handling
+  //if (time_hour_raw == 2 && DST_flag ) {
+  //  // only process DST routine around the time change
+  //  handle_DST();
+  //} 
 }
 
 void handle_display() {

@@ -28,14 +28,3 @@ extern int time_minute;
 extern int time_second;
 extern int date_month;
 extern int date_day;
-
-// DST Routines
-extern bool dst_state;
-  // DST START
-  // DST starts on the second sunday of March
-  extern int dst_start_day_count;
-
-  // DST END
-  // DST Ends the first sunday of November
-  extern int dst_end_day_count;
-
