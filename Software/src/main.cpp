@@ -31,7 +31,7 @@
 // Brightness Variables
 #define BRIGHTNESS_START            5
 #define BRIGHTNESS_MAX            100
-#define BRIGHTNESS_MIN              3
+#define BRIGHTNESS_MIN              1
 #define BRIGHTNESS_READ_MIN       100
 #define BRIGHTNESS_READ_MAX       850
 #define BRIGHTNESS_ERR_THRESH       5
@@ -110,8 +110,6 @@ void handle_time();
 void handle_display();
 void handle_brightness();
 
-
-
 void setup() {
   Serial.begin(115200);
   
@@ -127,7 +125,7 @@ void setup() {
   Serial.println("connected... yay!");
 
   // NTP Handling
-  ntp.updateInterval(900000);
+  ntp.updateInterval(900000); // set to update from ntp server every 900 seconds, or 15 minutes
   ntp.ntpServer("north-america.pool.ntp.org");
   ntp.ruleDST("CDT", Second, Sun, Mar, 2, -300);
   ntp.ruleSTD("CST",  First, Sun, Nov, 3, -360);
