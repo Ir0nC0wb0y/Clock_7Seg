@@ -1,13 +1,15 @@
 #include "Common.h"
 
-// Log Scale Brightness
-#define LOG_SCALE_A
-#define LOG_SCALE_B
-
-// Old Style Brightness
-#define BRIGHTNESS_START            5
+// Common Brightness variables
 #define BRIGHTNESS_MAX            100
 #define BRIGHTNESS_MIN              1
+
+// Log Scale Brightness
+#define LOG_SCALE_A          -133.603
+#define LOG_SCALE_B            33.802
+
+// Old Style Brightness
+//#define BRIGHTNESS_START            5
 #define BRIGHTNESS_READ_MIN       100
 #define BRIGHTNESS_READ_MAX       850
 #define BRIGHTNESS_ERR_THRESH       5
@@ -44,5 +46,17 @@ void handle_brightness_old() {
 }
 
 void handle_brightness_log() {
-
+    int brightness_new = LOG_SCALE_A + LOG_SCALE_B * log(analogRead(A0));
+    if (brightness_new < BRIGHTNESS_MIN) {
+        brightness_new = BRIGHTNESS_MIN;
+    } else if (brightness_new > BRIGHTNESS_MAX) {
+        brightness_new = BRIGHTNESS_MAX;
+    }
+    if (brightness_new + BRIGHTNESS_ERR_THRESH > brightness_set) {
+        brightness_set++;
+    } else if (brightness_new + BRIGHTNESS_ERR_THRESH < brightness_set) {
+        brightness_set--;
+    } else {
+        //this is the case where the new brightness is within tolerance of the old brightness
+    }
 }

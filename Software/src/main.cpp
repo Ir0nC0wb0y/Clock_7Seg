@@ -98,7 +98,7 @@ CRGBPalette16 MyRainbow_pal = MyRainbow;
 // #include <loop_handles.cpp>
 void handle_time();
 void handle_display();
-void handle_brightness();
+//void handle_brightness();
 
 void setup() {
   Serial.begin(115200);
@@ -159,7 +159,7 @@ void handle_time(){
 }
 
 void handle_display() {
-  handle_brightness();
+  handle_brightness_log();
   
   set_hr(time_hour);
   set_mn(time_minute);
