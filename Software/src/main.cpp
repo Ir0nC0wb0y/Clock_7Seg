@@ -16,30 +16,17 @@
 
 // WifiManager Setup
 #include <WiFiManager.h>
-
 #include "Common.h"
 #include "Segments_Hour.h"
 #include "Segments_Minute.h"
 #include "Animations.h"
+#include "Brightness.h"
 
 // FastLED Variables
 #define NUM_LEDS_HR                14
 #define NUM_LEDS_MN                14
 #define DATA_PIN_HR                 5  //D1
 #define DATA_PIN_MN                 4  //D2
-
-// Brightness Variables
-#define BRIGHTNESS_START            5
-#define BRIGHTNESS_MAX            100
-#define BRIGHTNESS_MIN              1
-#define BRIGHTNESS_READ_MIN       100
-#define BRIGHTNESS_READ_MAX       850
-#define BRIGHTNESS_ERR_THRESH       5
-#define BRIGHTNESS_CH_RATE_FAST     5
-#define BRIGHTNESS_CH_RATE_SLOW     1
-#define BRIGHTNESS_RATE_THRESH     10
-int brightness_set;
-int brightness_err      =           0;
 
 // Time Animation
 #define HOUR_FORMAT                12
@@ -70,24 +57,27 @@ int time_second        =            0;
 //int date_month         =            0;
 //int date_day           =            0;
 
-
 // DST Routines
 bool DST_flag          =            0;
 bool dst_state         =            1;               // default DST state
   // DST START
-  // DST starts on the second sunday of March
-  #define DST_START_MONTH           3
-  #define DST_START_DAY             0
-  #define DST_START_SEQ             2
-  #define DST_START_HOUR            2
-
+    // DST starts on the second sunday of March
+    #define DST_START_MONTH           3
+    #define DST_START_DAY             0
+    #define DST_START_SEQ             2
+    #define DST_START_HOUR            2
   // DST END
-  // DST Ends the first sunday of November
-  #define DST_END_MONTH            11
-  #define DST_END_DAY               0
-  #define DST_END_SEQ               1
-  #define DST_END_HOUR              2
+    // DST Ends the first sunday of November
+    #define DST_END_MONTH            11
+    #define DST_END_DAY               0
+    #define DST_END_SEQ               1
+    #define DST_END_HOUR              2
 
+// Loop variables
+#define LOOP_TIME 15 //ms
+unsigned long next_loop = 0; 
+
+// Create object instances
 WiFiUDP ntpUDP;
 NTP ntp(ntpUDP);
 
@@ -134,13 +124,15 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  handle_time();
-  handle_animation(TIME_ANIMATION);
-  handle_display();
+  if ( millis() >= next_loop) {
+    handle_time();
+    handle_animation(TIME_ANIMATION);
+    handle_display();
 
-  Serial.println();
+    next_loop = millis() + LOOP_TIME;
 
-  delay(1000);
+    Serial.println();
+  }
 }
 
 void handle_time(){
@@ -174,29 +166,4 @@ void handle_display() {
   FastLED.show();
 }
 
-void handle_brightness() {
-  int a_read = analogRead(A0);
-  int brightness_new = map(a_read,BRIGHTNESS_READ_MIN,BRIGHTNESS_READ_MAX,BRIGHTNESS_MIN,BRIGHTNESS_MAX);
-  Serial.print("Analog read, brightness_set, brightness_new "); Serial.print(a_read); Serial.print(", "); Serial.print(brightness_set); Serial.print(", "); Serial.println(brightness_new);
-  brightness_err = brightness_err + (brightness_new-brightness_set);
-  //Serial.print("brightness_err: "); Serial.println(brightness_err);
-  
-  if (abs(brightness_err) >= BRIGHTNESS_ERR_THRESH) {
-    int brightness_change;
-    if (abs(brightness_err) > BRIGHTNESS_RATE_THRESH ) {
-      brightness_change = (abs(brightness_err)/brightness_err) * BRIGHTNESS_CH_RATE_FAST;
-    } else {
-      brightness_change = (abs(brightness_err)/brightness_err) * BRIGHTNESS_CH_RATE_SLOW;
-    }
-    brightness_set = brightness_set + brightness_change;
-    brightness_err = 0;
-    if (brightness_set > BRIGHTNESS_MAX) {
-      brightness_set = BRIGHTNESS_MAX;
-    } else if (brightness_set < BRIGHTNESS_MIN ) {
-      brightness_set = BRIGHTNESS_MIN;
-    }
-    //Serial.print("Analog read, led_brightness "); Serial.print(a_read); Serial.print(", "); Serial.println(brightness_set);
-    Serial.print("Setting new brightness: "); Serial.println(brightness_set);
-    FastLED.setBrightness(brightness_set);
-  }
-}
+
