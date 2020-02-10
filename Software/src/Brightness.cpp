@@ -46,17 +46,42 @@ void handle_brightness_old() {
 }
 
 void handle_brightness_log() {
-    int brightness_new = LOG_SCALE_A + LOG_SCALE_B * log(analogRead(A0));
-    if (brightness_new < BRIGHTNESS_MIN) {
-        brightness_new = BRIGHTNESS_MIN;
-    } else if (brightness_new > BRIGHTNESS_MAX) {
-        brightness_new = BRIGHTNESS_MAX;
-    }
-    if (brightness_new + BRIGHTNESS_ERR_THRESH > brightness_set) {
-        brightness_set++;
-    } else if (brightness_new + BRIGHTNESS_ERR_THRESH < brightness_set) {
+  int analog_read = analogRead(A0);
+  int brightness_new = LOG_SCALE_A + LOG_SCALE_B * log(analog_read);
+  if (brightness_new < brightness_set) {
+    brightness_set--;
+  } else if ( brightness_new > brightness_set) {
+    brightness_set++;
+  }
+
+  if (brightness_set > BRIGHTNESS_MAX){
+    brightness_set = BRIGHTNESS_MAX;
+  } else if ( brightness_set < BRIGHTNESS_MIN ) {
+    brightness_set = BRIGHTNESS_MIN;
+  }
+
+  /*if (brightness_new < BRIGHTNESS_MIN) {
+      brightness_new = BRIGHTNESS_MIN;
+  } else if (brightness_new > BRIGHTNESS_MAX) {
+      brightness_new = BRIGHTNESS_MAX;
+  }
+  if (brightness_new + BRIGHTNESS_ERR_THRESH > brightness_set) {
+      brightness_set++;
+  } else if (brightness_new + BRIGHTNESS_ERR_THRESH < brightness_set) {
+      brightness_set--;
+  } else {
+    //this is the case where the new brightness is within tolerance of the old brightness
+    if (brightness_set <= BRIGHTNESS_MIN + BRIGHTNESS_ERR_THRESH && brightness_new < brightness_set) {
+      if (brightness_set--)
         brightness_set--;
-    } else {
-        //this is the case where the new brightness is within tolerance of the old brightness
     }
+
+    if (brightness_set >= BRIGHTNESS_MAX - BRIGHTNESS_ERR_THRESH && brightness_new > brightness_set) {
+      brightness_set++;
+    }
+  }
+  */
+  FastLED.setBrightness(brightness_set);
+
+  Serial.print("Analog: "); Serial.print(analog_read); Serial.print(" brightness_new: "); Serial.print(brightness_new); Serial.print(", brightness_set: "); Serial.print(brightness_set);
 }

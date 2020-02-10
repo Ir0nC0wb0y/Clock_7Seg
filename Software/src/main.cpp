@@ -74,8 +74,8 @@ bool dst_state         =            1;               // default DST state
     #define DST_END_HOUR              2
 
 // Loop variables
-#define LOOP_TIME 15 //ms
-unsigned long next_loop = 0; 
+#define LOOP_TIME                    50 //ms
+unsigned long next_loop =             0; 
 
 // Create object instances
 WiFiUDP ntpUDP;
@@ -142,7 +142,7 @@ void handle_time(){
   time_second   = ntp.seconds();
   //date_month = timeClient.getMonth();
   //date_day   = timeClient.getDay();
-  Serial.print("The current time is: "); Serial.print(time_hour); Serial.print(":"); Serial.print(time_minute); Serial.print(":"); Serial.println(time_second);
+  //Serial.print("The current time is: "); Serial.print(time_hour); Serial.print(":"); Serial.print(time_minute); Serial.print(":"); Serial.println(time_second);
   if (HOUR_FORMAT == 12 ) {
     // Format the time for 12 hour readibility
     if ( time_hour_raw > 12) {
