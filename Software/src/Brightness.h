@@ -8,3 +8,4 @@ int brightness_err      =                 0;
 
 void handle_brightness_old();
 void handle_brightness_log();
+void handle_brightness_exp();

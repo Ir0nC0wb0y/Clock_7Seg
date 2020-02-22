@@ -159,7 +159,7 @@ void handle_time(){
 }
 
 void handle_display() {
-  handle_brightness_log();
+  handle_brightness_exp();
   
   set_hr(time_hour);
   set_mn(time_minute);
