@@ -5,8 +5,23 @@
 #define BRIGHTNESS_MIN              1
 
 // Log Scale Brightness
+  // logarithmic regression analysis taken from https://keisan.casio.com/exec/system/14059930226691
+  // Values:
+  //   X   |  Y  
+  // ------|------
+  //    5  |   1
+  //   25  |  50
+  //   75  |  90
+  //   90  | 100
 #define LOG_SCALE_A          -133.603
 #define LOG_SCALE_B            33.802
+
+// Exponential Brightness
+  //                      1001
+  // brightness = --------------------
+  //               ( 1 - e^-(x/A - B))
+  #define EXP_SCALE_A             10
+  #define EXP_SCALE_B             12
 
 // Old Style Brightness
 //#define BRIGHTNESS_START            5
@@ -17,6 +32,23 @@
 #define BRIGHTNESS_CH_RATE_SLOW     1
 #define BRIGHTNESS_RATE_THRESH     10
 
+void brightness_logic(int analog_read, int brightness_new) {
+  if (brightness_new < brightness_set) {
+    brightness_set--;
+  } else if ( brightness_new > brightness_set) {
+    brightness_set++;
+  }
+
+  if (brightness_set > BRIGHTNESS_MAX){
+    brightness_set = BRIGHTNESS_MAX;
+  } else if ( brightness_set < BRIGHTNESS_MIN ) {
+    brightness_set = BRIGHTNESS_MIN;
+  }
+
+  FastLED.setBrightness(brightness_set);
+
+  Serial.print("Analog: "); Serial.print(analog_read); Serial.print(" brightness_new: "); Serial.print(brightness_new); Serial.print(", brightness_set: "); Serial.print(brightness_set);
+}
 
 void handle_brightness_old() {
   int a_read = analogRead(A0);
@@ -48,40 +80,13 @@ void handle_brightness_old() {
 void handle_brightness_log() {
   int analog_read = analogRead(A0);
   int brightness_new = LOG_SCALE_A + LOG_SCALE_B * log(analog_read);
-  if (brightness_new < brightness_set) {
-    brightness_set--;
-  } else if ( brightness_new > brightness_set) {
-    brightness_set++;
-  }
 
-  if (brightness_set > BRIGHTNESS_MAX){
-    brightness_set = BRIGHTNESS_MAX;
-  } else if ( brightness_set < BRIGHTNESS_MIN ) {
-    brightness_set = BRIGHTNESS_MIN;
-  }
+  brightness_logic(analog_read, brightness_new);
+}
 
-  /*if (brightness_new < BRIGHTNESS_MIN) {
-      brightness_new = BRIGHTNESS_MIN;
-  } else if (brightness_new > BRIGHTNESS_MAX) {
-      brightness_new = BRIGHTNESS_MAX;
-  }
-  if (brightness_new + BRIGHTNESS_ERR_THRESH > brightness_set) {
-      brightness_set++;
-  } else if (brightness_new + BRIGHTNESS_ERR_THRESH < brightness_set) {
-      brightness_set--;
-  } else {
-    //this is the case where the new brightness is within tolerance of the old brightness
-    if (brightness_set <= BRIGHTNESS_MIN + BRIGHTNESS_ERR_THRESH && brightness_new < brightness_set) {
-      if (brightness_set--)
-        brightness_set--;
-    }
+void handle_brightness_exp() {
+  int analog_read = analogRead(A0);
+  int brightness_new = 101 / ( 1 + exp( -1 * (analog_read/EXP_SCALE_A - EXP_SCALE_B)));
 
-    if (brightness_set >= BRIGHTNESS_MAX - BRIGHTNESS_ERR_THRESH && brightness_new > brightness_set) {
-      brightness_set++;
-    }
-  }
-  */
-  FastLED.setBrightness(brightness_set);
-
-  Serial.print("Analog: "); Serial.print(analog_read); Serial.print(" brightness_new: "); Serial.print(brightness_new); Serial.print(", brightness_set: "); Serial.print(brightness_set);
+  brightness_logic(analog_read, brightness_new);
 }
