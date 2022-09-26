@@ -42,7 +42,7 @@ int grad_dir_mn         =           1;
   //    4 - animation_min_gradient
   //    5 - animation_const (need to set grad_const to int 0-255)
   #ifdef TIME_ANIMATION == 3
-    int grad_const = 200;
+    int grad_const = 120;
   #endif
 
 // Time Keeping (NTP)
@@ -75,12 +75,16 @@ bool dst_state         =            1;               // default DST state
 
 // Loop variables
 #define LOOP_TIME                    50 //ms
-unsigned long next_loop =             0; 
+unsigned long next_loop =             0;
+int time_minute_last    =            -1;
+int time_hour_last      =            -1;
+#define WIFI_CHECK_TIME          900000
+unsigned long next_wifi_check =       0;
 
 // Create object instances
+WiFiManager wifiManager;
 WiFiUDP ntpUDP;
 NTP ntp(ntpUDP);
-
 CRGB leds_hr[NUM_LEDS_HR];
 CRGB leds_mn[NUM_LEDS_MN];
 
@@ -96,46 +100,8 @@ DEFINE_GRADIENT_PALETTE( MyRainbow ) { // row: palette index, R, G, B
 CRGBPalette16 MyRainbow_pal = MyRainbow;
 
 // #include <loop_handles.cpp>
-void handle_time();
-void handle_display();
-//void handle_brightness();
 
-void setup() {
-  Serial.begin(115200);
-  
-  // Fastled
-  FastLED.addLeds<WS2812B, DATA_PIN_HR, GRB>(leds_hr, NUM_LEDS_HR);
-  FastLED.addLeds<WS2812B, DATA_PIN_MN, GRB>(leds_mn, NUM_LEDS_MN);
-  FastLED.setBrightness(BRIGHTNESS_START);
-  handle_display();
-  
-  // WiFiManager
-  WiFiManager wifiManager;
-  wifiManager.autoConnect("7Seg_Clock");
-  Serial.println("connected... yay!");
-
-  // NTP Handling
-  ntp.updateInterval(900000); // set to update from ntp server every 900 seconds, or 15 minutes
-  ntp.ntpServer("north-america.pool.ntp.org");
-  ntp.ruleDST("CDT", Second, Sun, Mar, 2, -300);
-  ntp.ruleSTD("CST",  First, Sun, Nov, 3, -360);
-  ntp.begin();
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-  if ( millis() >= next_loop) {
-    handle_time();
-    handle_animation(TIME_ANIMATION);
-    handle_display();
-
-    next_loop = millis() + LOOP_TIME;
-
-    Serial.println();
-  }
-}
-
-void handle_time(){
+void handle_time() {
   ntp.update();
   time_hour_raw = ntp.hours();
   time_minute   = ntp.minutes();
@@ -166,4 +132,45 @@ void handle_display() {
   FastLED.show();
 }
 
+void setup() {
+  Serial.begin(115200);
+  
+  // Fastled
+  FastLED.addLeds<WS2812B, DATA_PIN_HR, GRB>(leds_hr, NUM_LEDS_HR);
+  FastLED.addLeds<WS2812B, DATA_PIN_MN, GRB>(leds_mn, NUM_LEDS_MN);
+  FastLED.setBrightness(BRIGHTNESS_START);
+  handle_display();
+  
+  wifiManager.setConnectTimeout(20);
+  wifiManager.setConfigPortalTimeout(300);
+  wifiManager.autoConnect("7Seg_Clock");
+  Serial.println("connected... yay!");
 
+  // NTP Handling
+  ntp.updateInterval(900000); // set to update from ntp server every 900 seconds, or 15 minutes
+  //ntp.ntpServer("north-america.pool.ntp.org");
+  ntp.ruleDST("CDT", Second, Sun, Mar, 2, -300);
+  ntp.ruleSTD("CST",  First, Sun, Nov, 3, -360);
+  ntp.begin("north-america.pool.ntp.org");
+}
+
+void loop() {
+  // Run the display
+  if ( millis() >= next_loop) {
+    handle_time();
+    handle_animation(TIME_ANIMATION);
+    handle_display();
+
+    //next_loop = millis() + LOOP_TIME;
+
+    Serial.println();
+  }
+
+  // Check for WiFi Connection
+  if (millis() >= next_wifi_check) {
+    if (WiFi.status() != WL_CONNECTED) {
+      wifiManager.autoConnect("7Seg_Clock");
+    }
+    next_wifi_check = millis() + WIFI_CHECK_TIME;
+  }
+}
